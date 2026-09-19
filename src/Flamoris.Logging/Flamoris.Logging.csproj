@@ -5,10 +5,18 @@
     <RootNamespace>Flamoris.Logging</RootNamespace>
     <Description>Small structured logging foundation for FLAMORIS applications.</Description>
     <PackageId>Flamoris.Logging</PackageId>
+    <Version>0.1.0</Version>
     <Authors>FLAMORIS</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/flamoris-jp/flamoris-logging</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>flamoris;logging;structured-logging;diagnostics</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
 </Project>
