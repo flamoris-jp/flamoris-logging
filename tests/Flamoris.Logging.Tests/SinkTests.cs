@@ -41,7 +41,7 @@ public sealed class SinkTests
         using var temp = new TempDirectory();
         var formatter = new ConstantFormatter("1234");
         var lineBytes = Encoding.UTF8.GetByteCount("1234" + Environment.NewLine);
-        var sink = new FileLogSink(formatter, "app.log", temp.Path, true, lineBytes * 2, 3);
+        var sink = new FileLogSink(formatter, "app.log", temp.Path, true, (long)lineBytes * 2, 3);
         sink.Write(Event); sink.Write(Event);
         Assert.False(File.Exists(sink.ResolvedPath + ".1"));
         sink.Write(Event);
