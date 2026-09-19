@@ -12,6 +12,8 @@ Absolute file paths are used as supplied. Relative paths resolve against the exp
 
 Rotation occurs before an append only when a non-empty active file plus the next encoded event would exceed maxFileSizeMb. An exact boundary remains active. The active file moves to .1; older archives move upward. maxFiles counts the active file, so at most maxFiles - 1 archives exist.
 
+If a single encoded event is larger than the configured file bound, it is replaced with a compact truncated-event entry before rotation and append. This is deterministic and ensures one pathological event cannot bypass the configured local-storage limit.
+
 ## Threading and failures
 
 Configuration is immutable after creation. Each built-in sink serializes writes. There is no queue or unbounded buffer. Sink failures are caught independently and never escape to the host. Thread safety is per logger instance; multiple processes or independent instances must not target the same file.

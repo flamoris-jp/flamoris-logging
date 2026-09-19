@@ -51,6 +51,26 @@ public sealed class SinkTests
         Assert.False(File.Exists(sink.ResolvedPath + ".3"));
     }
 
+    [Fact]
+    public void Oversized_event_is_replaced_with_a_bounded_notice()
+    {
+        using var temp = new TempDirectory();
+        const int maxBytes = 96;
+        var sink = new FileLogSink(
+            new ConstantFormatter(new string('x', 1_000)),
+            "app.log",
+            temp.Path,
+            rotationEnabled: true,
+            maxFileSizeBytes: maxBytes,
+            maxFiles: 3);
+
+        sink.Write(Event);
+
+        var bytes = File.ReadAllBytes(sink.ResolvedPath);
+        Assert.InRange(bytes.Length, 1, maxBytes);
+        Assert.Contains("[TRUNCATED oversized log event", Encoding.UTF8.GetString(bytes));
+    }
+
     private sealed class ConstantFormatter(string value) : ILogFormatter
     {
         public string Format(LogEvent logEvent) => value;
