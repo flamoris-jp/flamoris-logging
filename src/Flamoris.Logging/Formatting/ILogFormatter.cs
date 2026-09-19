@@ -1,2 +1,6 @@
 namespace Flamoris.Logging.Formatting;
-internal interface ILogFormatter { string Format(LogEvent logEvent); }
+
+internal interface ILogFormatter
+{
+    void Write(LogEvent logEvent, TextWriter writer);
+}

@@ -12,7 +12,7 @@ Absolute file paths are used as supplied. Relative paths resolve against the exp
 
 Rotation occurs before an append only when a non-empty active file plus the next encoded event would exceed maxFileSizeMb. An exact boundary remains active. The active file moves to .1; older archives move upward. maxFiles counts the active file, so at most maxFiles - 1 archives exist.
 
-If a single encoded event is larger than the configured file bound, it is replaced with a compact truncated-event entry before rotation and append. This is deterministic and ensures one pathological event cannot bypass the configured local-storage limit.
+File sinks write through a capped UTF-8 buffer, so formatting stops as soon as the configured byte limit is reached; a pathological message, property, or exception is never first materialized as a similarly large text or byte array. An event that reaches the bound is replaced with a compact truncated-event entry before rotation and append. This is deterministic and ensures one pathological event cannot bypass the configured local-storage limit.
 
 ## Threading and failures
 

@@ -8,7 +8,11 @@ internal sealed class ConsoleLogSink(ILogFormatter formatter, TextWriter? output
     private readonly TextWriter output = output ?? Console.Out;
     public void Write(LogEvent logEvent)
     {
-        var text = formatter.Format(logEvent);
-        lock (gate) { output.WriteLine(text); output.Flush(); }
+        lock (gate)
+        {
+            formatter.Write(logEvent, output);
+            output.WriteLine();
+            output.Flush();
+        }
     }
 }

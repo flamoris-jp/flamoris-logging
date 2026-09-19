@@ -32,11 +32,10 @@ internal sealed class FileLogSink : ILogSink
 
     public void Write(LogEvent logEvent)
     {
-        var bytes = Utf8.GetBytes(formatter.Format(logEvent) + Environment.NewLine);
-        if (rotationEnabled && bytes.Length > maxFileSizeBytes)
-        {
-            bytes = CreateOversizedEventNotice(bytes.Length);
-        }
+        var payload = new BoundedUtf8TextWriter(maxFileSizeBytes);
+        formatter.Write(logEvent, payload);
+        payload.Write(Environment.NewLine);
+        var bytes = payload.IsTruncated ? CreateOversizedEventNotice() : payload.ToArray();
 
         lock (gate)
         {
@@ -53,14 +52,14 @@ internal sealed class FileLogSink : ILogSink
         }
     }
 
-    private byte[] CreateOversizedEventNotice(int originalByteCount)
+    private byte[] CreateOversizedEventNotice()
     {
         // A configured rotating file must never exceed its size bound because of
         // one pathological event. The normalized public configuration has a
         // minimum size of one MiB; this extra guard also keeps test/internal
         // construction bounded for smaller limits.
         var notice = Utf8.GetBytes(
-            $"[TRUNCATED oversized log event originalBytes={originalByteCount} limitBytes={maxFileSizeBytes}]"
+            $"[TRUNCATED oversized log event limitBytes={maxFileSizeBytes}]"
             + Environment.NewLine);
         if (notice.Length <= maxFileSizeBytes) return notice;
 

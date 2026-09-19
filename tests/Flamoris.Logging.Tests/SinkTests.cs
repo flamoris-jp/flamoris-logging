@@ -71,8 +71,42 @@ public sealed class SinkTests
         Assert.Contains("[TRUNCATED oversized log event", Encoding.UTF8.GetString(bytes));
     }
 
+    [Fact]
+    public void Oversized_formatter_stops_at_the_bounded_writer_limit()
+    {
+        using var temp = new TempDirectory();
+        var formatter = new EndlessFormatter();
+        var sink = new FileLogSink(
+            formatter,
+            "app.log",
+            temp.Path,
+            rotationEnabled: true,
+            maxFileSizeBytes: 96,
+            maxFiles: 3);
+
+        sink.Write(Event);
+
+        Assert.InRange(formatter.CharactersWritten, 1, 97);
+        Assert.InRange(new FileInfo(sink.ResolvedPath).Length, 1, 96);
+    }
+
     private sealed class ConstantFormatter(string value) : ILogFormatter
     {
-        public string Format(LogEvent logEvent) => value;
+        public void Write(LogEvent logEvent, TextWriter writer) => writer.Write(value);
+    }
+
+    private sealed class EndlessFormatter : ILogFormatter
+    {
+        public int CharactersWritten { get; private set; }
+
+        public void Write(LogEvent logEvent, TextWriter writer)
+        {
+            for (var index = 0; index < 10_000_000; index++)
+            {
+                writer.Write('x');
+                CharactersWritten++;
+                if (writer is BoundedUtf8TextWriter bounded && bounded.IsTruncated) return;
+            }
+        }
     }
 }
