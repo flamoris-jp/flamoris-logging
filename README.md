@@ -38,9 +38,65 @@ Application-specific domain events remain owned by each application. This librar
 - [FLAMORIS Cutwork](https://github.com/flamoris-jp/flamoris-cutwork)
 - [FLAMORIS Kachinco](https://github.com/flamoris-jp/flamoris-kachinco)
 
+## Quick start
+
+The library targets .NET 10 and has no application or MCP dependency.
+
+~~~csharp
+var options = new LoggingOptions
+{
+    Level = "debug",
+    Categories =
+    {
+        ["mcp"] = "info",
+        ["mcp.transport"] = "debug",
+        ["mcp.auth"] = "warn",
+    },
+};
+
+var logger = FlamorisLogger.Create(options, basePath: appDataDirectory);
+logger.Info("mcp.transport", "Connected", new Dictionary<string, object?>
+{
+    ["client"] = "chatgpt",
+    ["session"] = sessionId,
+});
+~~~
+
+Defaults are debug with console and logs/flamoris.log outputs. Options are ordinary mutable POCOs suitable for .NET configuration binding. Supported levels are exactly error, warn, info, and debug. Invalid values safely fall back to debug. Hierarchical categories use the most-specific configured ancestor.
+
+See the [design and behavior contract](docs/design.md) for timestamp, path, rotation, concurrency, failure-isolation, and redaction details.
+
+## Configuration
+
+~~~json
+{
+  "logging": {
+    "level": "debug",
+    "categories": {
+      "mcp": "info",
+      "mcp.transport": "debug",
+      "mcp.auth": "warn"
+    },
+    "outputs": [
+      { "type": "console" },
+      {
+        "type": "file",
+        "path": "logs/flamoris.log",
+        "format": "text",
+        "rotation": {
+          "enabled": true,
+          "maxFileSizeMb": 20,
+          "maxFiles": 10
+        }
+      }
+    ]
+  }
+}
+~~~
+
 ## Status
 
-Initial repository foundation. API and package boundaries are not yet frozen.
+Foundation implementation. Public contracts may still evolve before the first stable package release.
 
 ## License
 

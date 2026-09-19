@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Flamoris.Logging</AssemblyName>
+    <RootNamespace>Flamoris.Logging</RootNamespace>
+    <Description>Small structured logging foundation for FLAMORIS applications.</Description>
+    <PackageId>Flamoris.Logging</PackageId>
+    <Authors>FLAMORIS</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/flamoris-jp/flamoris-logging</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>
