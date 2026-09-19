@@ -66,6 +66,26 @@ Defaults are debug with console and logs/flamoris.log outputs. Options are ordin
 
 See the [design and behavior contract](docs/design.md) for timestamp, path, rotation, concurrency, failure-isolation, and redaction details.
 
+## NuGet package
+
+FLAMORIS applications should consume this library through the `Flamoris.Logging` NuGet package rather than copying DLLs between repositories.
+
+Package source:
+
+`https://nuget.pkg.github.com/flamoris-jp/index.json`
+
+Package reference:
+
+~~~xml
+<ItemGroup>
+  <PackageReference Include="Flamoris.Logging" Version="0.1.0" />
+</ItemGroup>
+~~~
+
+Publishing is tag-driven. The tag must match the project package version, for example `v0.1.0`. Tagged releases are built, tested, packed, and published to GitHub Packages using the workflow `GITHUB_TOKEN`.
+
+See [package consumption and release flow](docs/package-consumption.md) for local authentication, consumer CI, and versioning details.
+
 ## Configuration
 
 ~~~json

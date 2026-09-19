@@ -16,9 +16,15 @@ jobs:
       - run: dotnet restore Flamoris.Logging.slnx
       - run: dotnet build Flamoris.Logging.slnx --configuration Release --no-restore
       - run: dotnet test Flamoris.Logging.slnx --configuration Release --no-build --logger trx --results-directory TestResults
+      - run: dotnet pack src/Flamoris.Logging/Flamoris.Logging.csproj --configuration Release --no-build --output artifacts/packages
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-results
           path: TestResults
+          retention-days: 3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts/packages/*.nupkg
           retention-days: 3
