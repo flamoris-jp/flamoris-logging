@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,7 +54,7 @@ jobs:
         run: |
           $package = Get-ChildItem "artifacts/packages/Flamoris.Logging.*.nupkg" |
             Where-Object { $_.Name -notlike "*.snupkg" } |
-            Select-Object -Single
+            Select-Object -First 1
           dotnet nuget push $package.FullName `
             --source "https://nuget.pkg.github.com/flamoris-jp/index.json" `
             --api-key $env:GITHUB_TOKEN
