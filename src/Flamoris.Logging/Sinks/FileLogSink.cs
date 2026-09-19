@@ -1,0 +1,63 @@
+using System.Text;
+using Flamoris.Logging.Formatting;
+
+namespace Flamoris.Logging.Sinks;
+
+internal sealed class FileLogSink : ILogSink
+{
+    private static readonly UTF8Encoding Utf8 = new(false);
+    private readonly object gate = new();
+    private readonly ILogFormatter formatter;
+    private readonly string path;
+    private readonly bool rotationEnabled;
+    private readonly long maxFileSizeBytes;
+    private readonly int maxFiles;
+
+    public FileLogSink(ILogFormatter formatter, string configuredPath, string basePath,
+        bool rotationEnabled, int maxFileSizeMb, int maxFiles)
+        : this(formatter, configuredPath, basePath, rotationEnabled,
+            checked((long)maxFileSizeMb * 1024 * 1024), maxFiles) { }
+
+    internal FileLogSink(ILogFormatter formatter, string configuredPath, string basePath,
+        bool rotationEnabled, long maxFileSizeBytes, int maxFiles)
+    {
+        this.formatter = formatter;
+        path = Path.GetFullPath(configuredPath, basePath);
+        this.rotationEnabled = rotationEnabled;
+        this.maxFileSizeBytes = maxFileSizeBytes;
+        this.maxFiles = maxFiles;
+    }
+
+    internal string ResolvedPath => path;
+
+    public void Write(LogEvent logEvent)
+    {
+        var bytes = Utf8.GetBytes(formatter.Format(logEvent) + Environment.NewLine);
+        lock (gate)
+        {
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+            if (rotationEnabled && File.Exists(path))
+            {
+                var length = new FileInfo(path).Length;
+                if (length > 0 && length + bytes.Length > maxFileSizeBytes) Rotate();
+            }
+            using var stream = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read);
+            stream.Write(bytes);
+            stream.Flush();
+        }
+    }
+
+    private void Rotate()
+    {
+        if (maxFiles <= 1) { File.Delete(path); return; }
+        var archiveCount = maxFiles - 1;
+        File.Delete($"{path}.{archiveCount}");
+        for (var index = archiveCount - 1; index >= 1; index--)
+        {
+            var source = $"{path}.{index}";
+            if (File.Exists(source)) File.Move(source, $"{path}.{index + 1}");
+        }
+        if (File.Exists(path)) File.Move(path, $"{path}.1");
+    }
+}

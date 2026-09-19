@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Flamoris.Logging/Flamoris.Logging.csproj" />
+  <Project Path="tests/Flamoris.Logging.Tests/Flamoris.Logging.Tests.csproj" />
+</Solution>
