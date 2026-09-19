@@ -35,6 +35,7 @@ internal sealed class FileLogSink : ILogSink
         var payload = new BoundedUtf8TextWriter(maxFileSizeBytes);
         formatter.Write(logEvent, payload);
         payload.Write(Environment.NewLine);
+        payload.Complete();
         var bytes = payload.IsTruncated ? CreateOversizedEventNotice() : payload.ToArray();
 
         lock (gate)

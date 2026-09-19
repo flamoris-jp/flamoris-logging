@@ -1,3 +1,4 @@
+using System.Text;
 using Flamoris.Logging.Formatting;
 
 namespace Flamoris.Logging.Tests;
@@ -43,6 +44,22 @@ public sealed class FormattingTests
         Assert.DoesNotContain("app\nforged", text);
         Assert.Contains("app\\nforged", text);
         Assert.Contains("line1\\r\\nline2", text);
+    }
+
+    [Fact]
+    public void Bounded_utf8_writer_preserves_surrogate_pairs_and_rejects_partial_scalars()
+    {
+        var complete = new BoundedUtf8TextWriter(4);
+        complete.Write("🐱");
+        complete.Complete();
+        Assert.False(complete.IsTruncated);
+        Assert.Equal("🐱", Encoding.UTF8.GetString(complete.ToArray()));
+
+        var boundary = new BoundedUtf8TextWriter(3);
+        boundary.Write("🐱");
+        boundary.Complete();
+        Assert.True(boundary.IsTruncated);
+        Assert.Empty(boundary.ToArray());
     }
 
     private static void ThrowForStack() => throw new InvalidOperationException("broken");
