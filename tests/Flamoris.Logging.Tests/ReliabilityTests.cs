@@ -37,4 +37,20 @@ public sealed class ReliabilityTests
         Assert.Equal("[REDACTED]", sink.Events[0].Properties["token"]);
         Assert.Equal("chatgpt", sink.Events[0].Properties["client"]);
     }
+
+    [Fact]
+    public void Invalid_base_path_does_not_escape_into_host()
+    {
+        var diagnostics = new List<string>();
+        var options = new LoggingOptions
+        {
+            Outputs = [new LogOutputOptions { Type = "console" }],
+        };
+
+        var exception = Record.Exception(() =>
+            FlamorisLogger.Create(options, basePath: "\0invalid", diagnostic: diagnostics.Add));
+
+        Assert.Null(exception);
+        Assert.Contains(diagnostics, item => item.Contains("Invalid logging base path"));
+    }
 }

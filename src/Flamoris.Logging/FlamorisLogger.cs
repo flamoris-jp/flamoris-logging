@@ -25,7 +25,7 @@ public sealed class FlamorisLogger
     {
         var configuration = ConfigurationNormalizer.Normalize(options);
         var formatter = new TextLogFormatter(configuration.UseLocalTime);
-        var resolvedBasePath = Path.GetFullPath(basePath ?? AppContext.BaseDirectory);
+        var resolvedBasePath = ResolveBasePath(basePath, diagnostic);
         var sinks = new List<ILogSink>();
         foreach (var output in configuration.Outputs)
         {
@@ -98,8 +98,21 @@ public sealed class FlamorisLogger
         }
     }
 
-    private static string NormalizeCategory(string? category) =>
-        string.IsNullOrWhiteSpace(category) ? "app" : category.Trim().Trim('.');
+    private static string NormalizeCategory(string? category)
+    {
+        var normalized = category?.Trim().Trim('.');
+        return string.IsNullOrWhiteSpace(normalized) ? "app" : normalized;
+    }
+
+    private static string ResolveBasePath(string? configuredPath, Action<string>? callback)
+    {
+        try { return Path.GetFullPath(configuredPath ?? AppContext.BaseDirectory); }
+        catch (Exception exception)
+        {
+            TryReport(callback, $"Invalid logging base path; using AppContext.BaseDirectory: {exception.Message}");
+            return AppContext.BaseDirectory;
+        }
+    }
 
     private static void TryReport(Action<string>? callback, string message)
     {
