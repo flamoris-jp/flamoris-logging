@@ -5,7 +5,7 @@
     <RootNamespace>Flamoris.Logging</RootNamespace>
     <Description>Small structured logging foundation for FLAMORIS applications.</Description>
     <PackageId>Flamoris.Logging</PackageId>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>FLAMORIS</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
