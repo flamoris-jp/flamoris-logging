@@ -6,7 +6,7 @@ Part of the **FLAMORIS Commons** shared infrastructure family.
 
 ## Purpose
 
-FLAMORIS Logging will provide a small, reusable diagnostics layer for FLAMORIS desktop applications and shared infrastructure.
+FLAMORIS Logging provides a small, reusable diagnostics layer for FLAMORIS desktop applications and shared infrastructure.
 
 The initial boundary is intentionally narrow:
 
@@ -78,11 +78,11 @@ Package reference:
 
 ~~~xml
 <ItemGroup>
-  <PackageReference Include="Flamoris.Logging" Version="0.1.0" />
+  <PackageReference Include="Flamoris.Logging" Version="1.0.0" />
 </ItemGroup>
 ~~~
 
-Publishing is tag-driven. The tag must match the project package version, for example `v0.1.0`. Tagged releases are built, tested, packed, and published to GitHub Packages using the workflow `GITHUB_TOKEN`.
+Publishing is tag-driven. The tag must match the project package version, for example `v1.0.0`. Tagged versions are built, tested, packed, and published to GitHub Packages using the workflow `GITHUB_TOKEN`.
 
 See [package consumption and release flow](docs/package-consumption.md) for local authentication, consumer CI, and versioning details.
 
@@ -116,7 +116,7 @@ See [package consumption and release flow](docs/package-consumption.md) for loca
 
 ## Status
 
-Foundation implementation. Public contracts may still evolve before the first stable package release.
+Stable 1.0 package line. `Flamoris.Logging` 1.0.0 is the current stable package. Breaking public API changes require a new major version.
 
 ## License
 
