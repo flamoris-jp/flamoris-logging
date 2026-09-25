@@ -5,7 +5,7 @@ FLAMORIS applications should consume the shared logging library as a NuGet packa
 ## Package
 
 - Package ID: `Flamoris.Logging`
-- Initial version: `0.1.0`
+- Current stable version: `1.0.0`
 - Feed: `https://nuget.pkg.github.com/flamoris-jp/index.json`
 
 ## Local development
@@ -33,7 +33,7 @@ Then reference the package:
 
 ~~~xml
 <ItemGroup>
-  <PackageReference Include="Flamoris.Logging" Version="0.1.0" />
+  <PackageReference Include="Flamoris.Logging" Version="1.0.0" />
 </ItemGroup>
 ~~~
 
@@ -67,7 +67,7 @@ Publishing is tag-driven.
 
 1. Update `<Version>` in `src/Flamoris.Logging/Flamoris.Logging.csproj`.
 2. Merge the reviewed change to `main`.
-3. Create the matching tag, for example `v0.1.0`.
+3. Create the matching tag, for example `v1.0.0`.
 4. The publish workflow builds, tests, packs, verifies that the tag matches the project version, and pushes to GitHub Packages.
 
 Package versions are immutable. The workflow intentionally does not use `--skip-duplicate`; attempting to republish an existing version should fail.
