@@ -72,7 +72,7 @@ FLAMORIS applications should consume this library through the `Flamoris.Logging`
 
 Package source:
 
-`https://nuget.pkg.github.com/flamoris-jp/index.json`
+`https://api.nuget.org/v3/index.json`
 
 Package reference:
 
@@ -82,9 +82,9 @@ Package reference:
 </ItemGroup>
 ~~~
 
-Publishing is tag-driven. The tag must match the project package version, for example `v1.0.0`. Tagged versions are built, tested, packed, and published to GitHub Packages using the workflow `GITHUB_TOKEN`.
+Publishing is normally tag-driven. The tag must match the project package version, for example `v1.0.0`. Tagged versions are built, tested, packed, and published to nuget.org through NuGet Trusted Publishing (GitHub Actions OIDC), without a long-lived API key. A guarded manual workflow dispatch exists for feed migration/recovery from the exact current `main` commit.
 
-See [package consumption and release flow](docs/package-consumption.md) for local authentication, consumer CI, and versioning details.
+See [package consumption and release flow](docs/package-consumption.md) for anonymous restore, consumer CI, and versioning details.
 
 ## Configuration
 
